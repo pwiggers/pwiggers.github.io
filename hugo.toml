@@ -1,0 +1,10 @@
+baseURL = 'https://blog.paulwiggers.com/'
+locale = 'en-us'
+title = 'Paul Wiggers: Azure Notes'
+theme = 'PaperMod'
+
+[caches]
+    [caches.images]
+        dir = ':cacheDir/images'
+
+
