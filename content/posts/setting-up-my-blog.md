@@ -3,6 +3,7 @@ date = '2026-11-02T21:00:00+01:00'
 draft = false
 title = 'Setting up my blog on GitHub Pages'
 tags = ['github-pages', 'dns', 'hugo']
+description = "How a missing trailing dot in a CNAME record broke my custom domain, and how dig showed me why"
 +++
 
 *This post is long. If you only care about the DNS problem, [jump to the troubleshooting section](#troubleshooting-dns-issues).*
@@ -156,7 +157,7 @@ In theory, it is quite easy, just follow these steps
 1. Go to your GitHub repo settings, and select the pages tab
 2. Scroll down to the custom domain setting and enter your defined custom URL. In my case this is blog.paulwiggers.com
 3. Press the Save button
-4. Create a DNS CNAME record and point it to YOUR-USERNAME.github.io. For example, I have created a CNAME record for **blog** (a CNAME record is an alias fo another name)
+4. Create a DNS CNAME record and point it to YOUR-USERNAME.github.io. For example, I have created a CNAME record for **blog** (a CNAME record is an alias for another name)
 5. After the verification, select the *Enforce HTTPS* option
 
 ### Troubleshooting DNS issues
@@ -172,7 +173,7 @@ What do you mean, I have configured an A record? I have configured a CNAME.
 
 What could be wrong?
 
-Time to turn to the trusty *dig* command (Dig is a command line tool to querying DNS)
+Time to turn to the trusty *dig* command (Dig is a command line tool for querying DNS)
 
 ```bash
 dig blog.paulwiggers.com +noall +answer
@@ -193,19 +194,21 @@ dig blog.paulwiggers.com +noall +answer
 
 ; <<>> DiG 9.10.6 <<>> blog.paulwiggers.com +noall +answer
 ;; global options: +cmd
-blog.paulwiggers.com.   300.  IN.  CNAME.  pwiggers.github.io.
+blog.paulwiggers.com.   300  IN  CNAME  pwiggers.github.io.
 ```
 
-The DNS check of GitHub can lag behind, so make sure that it is properly resolved before moving on. Also, the enforce HTTPS option only becomes available after a certificate has been issued. This process will start after the DNS has been verified.
-
 That is looking much better! The record now resolves to the proper target and the site is live.
-I can now push this post to a live website with a few simple commands
 
-1. ```git add .```
-2. ```git commit -m "publish first post"```
-3. ```git push```
+>The DNS check of GitHub can lag behind, so make sure that it is properly resolved before moving on. Also, the enforce HTTPS option only becomes available after a certificate has been issued. This process will start after the DNS has been verified.
 
-As you can see, the post is live. How a small . can have such an impact.
+After waiting a bit the rest was simple
+
+1. The DNS check passed
+2. Enfore HTTPS was enabled
+3. The post was pushed to GitHub
+4. GitHub actions ran successfully and the post is now live! 
+
+I can now push this post to a live website with a few simple commands as described above, and as you can see, the post is live. How a small . can have such an impact.
 
 The key take away from this:
 
